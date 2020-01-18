@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>C</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>Hello, Crawling</h1>
+    <h3>Movie List</h3>
+    <div id="listBox">
+
+    </div>
+    <script>
+      function elt(name, attributes) {
+        var node = document.createElement(name);
+        if (attributes && typeof attributes !== "string") {
+          for (var attr in attributes) {
+            if (attributes.hasOwnProperty(attr)) {
+              node.setAttribute(attr, attributes[attr]);
+            }
+          }
+        }
+        for (var i = 2; i < arguments.length; i++) {
+          var child = arguments[i];
+          if (typeof child === "string") {
+            child = document.createTextNode(child);
+          }
+          node.append(child);
+        }
+        return node;
+      }
+
+      axios.get('/crw').then(res=>{
+          const {data} = res;
+          let imgList = [];
+          console.log(data.list.length);
+          data.list.map(item=>{
+            const img_box = elt('div',{class:"img_box"})
+            const img = elt('img',{src:item.src,class:"img"});
+            const img_info = elt('p',{class:"movie_info"},item.title)
+            img_box.append(img,img_info);
+            imgList.push(img_box);
+          });
+          $('#listBox').append(imgList);
+        })
+    </script>
+  </body>
+</html>
