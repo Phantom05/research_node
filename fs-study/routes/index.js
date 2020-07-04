@@ -6,9 +6,9 @@ import {
 } from "@/operations/user-operation";
 import { database } from "@/database/mysql";
 import { v4 as uuidv4 } from "uuid";
-var express = require("express");
+import _ from "lodash";
+import express from "express";
 var router = express.Router();
-const fs = require("fs");
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
@@ -21,11 +21,14 @@ router.get("/", async function (req, res, next) {
 });
 
 // NOTE: delete
-router.get("/delete", async function (req, res, next) {
+router.post("/delete", async function (req, res, next) {
   const email = "monster2jy@gmail.com";
   // DEBUG: userCode로 바꾸기
+  const userCode = req.body.userCode;
+
+  console.log(userCode, "userCode");
   const deleteQuery = await database.query(
-    `DELETE FROM express_movie_app.users WHERE email="${email}" `
+    `DELETE FROM express_movie_app.users WHERE userCode="${userCode}" `
   );
   console.log(deleteQuery, "deleteQuery");
   if (deleteQuery.affectedRows === 1) {
@@ -36,7 +39,7 @@ router.get("/delete", async function (req, res, next) {
 });
 
 // NOTE: insert
-router.get("/insert", async function (req, res, next) {
+router.post("/insert", async function (req, res, next) {
   const uniqId = uuidv4();
   const reqBody = {
     email: "monster2jy@gmail.com",
@@ -45,8 +48,16 @@ router.get("/insert", async function (req, res, next) {
     userCode: uniqId.replace(/\-/g, ""),
   };
 
-  const insertKeys = Object.keys(reqBody).join(", ");
-  const insertValues = Object.values(reqBody)
+  const { email, password, username } = req.body;
+  const insertFormat = {
+    email,
+    password,
+    username,
+    userCode: uniqId.replace(/\-/g, ""),
+  };
+
+  const insertKeys = Object.keys(insertFormat).join(", ");
+  const insertValues = Object.values(insertFormat)
     .map((i) => `"${i}"`)
     .join(", ");
 
@@ -72,73 +83,43 @@ router.get("/getUser", async function (req, res, next) {
 });
 
 // NOTE: Update
-router.get("/update", async function (req, res, next) {
+router.post("/update", async function (req, res, next) {
   const email = "monster2jy@gmail.com";
-  // DEBUG: userCode로 바꾸기
-  const updateQuery = await database.query(
-    `UPDATE express_movie_app.users SET username="김준영" WHERE email="${email}"`
+  console.log(req.body);
+
+  console.log(_.omit(req.body, ["userCode"]));
+
+  const updateFormat = {
+    email: req.body.email,
+    password: req.body.password,
+    username: req.body.username,
+  };
+  const userCode = req.body.userCode;
+  const updateString = _.reduce(
+    Object.entries(updateFormat),
+    (acc, [key, value]) => {
+      console.log(key, value, "key, value");
+      if (value.length !== 0) {
+        acc += `${key}="${value}", `;
+      }
+      return acc;
+    },
+    ""
   );
-  console.log(updateQuery, "updateQuery");
+  console.log(updateString, "updateString");
+
+  const updateQuery = await database.query(
+    `UPDATE express_movie_app.users SET ${removeLastComma(
+      updateString
+    )} WHERE userCode="${userCode}"`
+  );
   res.json({ result: 1, data: updateQuery });
 });
 
 module.exports = router;
 
-// class Test {
-//   constructor(props) {
-//     this.sql = null;
-//   }
-//   setSql(qr) {
-//     const config = {
-//       ph_agree_m_update: `"UPDATE fm_z_ph_agree_m  SET ph_agree_month = {$data['ph_agree_month']}
-//         WHERE ph_agree_m_id = {$data['ph_agree_m_id']}"`,
-//       get_ph_agree_m: ` "SELECT * FROM fm_z_ph_agree_m
-//         WHERE ph_agree_m_id = {$ph_agree_m_id}
-//       "`,
-//     };
-//     this.sql = config[qr];
-//   }
-
-//   query(...query){
-//     this.setSql()
-//   }
-//   async do(...query){
-//     const {result,data,error} = await this.query(query);
-//     if(data && !error){
-//       this.result = {
-//         result:1,
-//         error:null,
-//         data,
-//       };
-//     }else{
-//       this.result = {
-//         result:2,
-//         error:result.errno,
-//       }
-//     }
-//   }
-// }
-
-// console.log(_.map(reqBody,i=>));
-// db.query(`insert into showplex.user (email, password, username, phone, verifyNumber, verify) values ("${email}", "${password}", "${username}", "${phone}", "${verifyNumber}", "${verify}")`)
-
-// const dataPosts = await database.query("select * from howto.post");
-
-// await addUser("users", value);
-// db.query("select * from howto.post", (err, results) => {
-//   console.log([...results], "db");
-// });
-// db.query("select * from howto.post").then((rows) => {
-//   console.log(rows, "rwr");
-// });
-
-// ES7 Version
-// const getJsonFile = (filePath, encoding = "utf8") =>
-//   new Promise((resolve, reject) => {
-//     fs.readFile(filePath, encoding, (err, contents) => {
-//       if (err) {
-//         return reject(err);
-//       }
-//       resolve(contents);
-//     });
-//   }).then(JSON.parse);
+function removeLastComma(strng) {
+  var n = strng.lastIndexOf(",");
+  var a = strng.substring(0, n);
+  return a;
+}
