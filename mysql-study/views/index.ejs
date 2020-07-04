@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+
+  <% users.map(item=>{%>
+  <div>
+    <%= item.username %>
+    <%= item.email %>
+    <%= item.userCode %>
+    <hr>
+  </div>
+  <% }) %>
+
+  <h2>get User</h2>
+  <button id="getUser">Click</button>
+
+  <h2>insert User</h2>
+  <button id="insertUser">Click</button>
+
+  <h2>delete User</h2>
+  <button id="deleteUser">Click</button>
+
+  <h2>update User</h2>
+  <button id="updateUser">Click</button>
+
+  <script>
+    const getUser = document.getElementById('getUser');
+    const insertUser = document.getElementById('insertUser');
+    const deleteUser = document.getElementById('deleteUser');
+    const updateUser = document.getElementById('updateUser');
+
+
+    getUser.addEventListener('click', function () {
+      console.log('getUser click');
+      axios.get('/getUser').then(({
+        data
+      }) => {
+        console.log(data, 'res');
+      })
+    })
+    insertUser.addEventListener('click', function () {
+      console.log('insertUser click');
+      axios.get('/insert').then(({
+        data
+      }) => {
+        console.log(data, 'res');
+        location.reload()
+      })
+    })
+    deleteUser.addEventListener('click', function () {
+      console.log('deleteUser click');
+      axios.get('/delete').then(({
+        data
+      }) => {
+        console.log(data, 'res');
+        location.reload()
+      })
+    })
+    updateUser.addEventListener('click', function () {
+      console.log('updateUser click');
+      axios.get('/update').then(({
+        data
+      }) => {
+        console.log(data, 'res');
+        location.reload()
+      })
+    })
+  </script>
+</body>
+
+</html>
