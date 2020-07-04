@@ -15,22 +15,16 @@ router.get("/", async function (req, res, next) {
   const getQuery = await database.query(
     "SELECT * FROM express_movie_app.users"
   );
-
   console.log(getQuery, "getQuery");
   res.render("index", { title: "Express", users: getQuery });
 });
 
 // NOTE: delete
 router.post("/delete", async function (req, res, next) {
-  const email = "monster2jy@gmail.com";
-  // DEBUG: userCode로 바꾸기
   const userCode = req.body.userCode;
-
-  console.log(userCode, "userCode");
   const deleteQuery = await database.query(
     `DELETE FROM express_movie_app.users WHERE userCode="${userCode}" `
   );
-  console.log(deleteQuery, "deleteQuery");
   if (deleteQuery.affectedRows === 1) {
     res.json({ result: 1 });
   } else {
@@ -41,13 +35,6 @@ router.post("/delete", async function (req, res, next) {
 // NOTE: insert
 router.post("/insert", async function (req, res, next) {
   const uniqId = uuidv4();
-  const reqBody = {
-    email: "monster2jy@gmail.com",
-    username: "이준영",
-    password: "1234",
-    userCode: uniqId.replace(/\-/g, ""),
-  };
-
   const { email, password, username } = req.body;
   const insertFormat = {
     email,
@@ -55,7 +42,6 @@ router.post("/insert", async function (req, res, next) {
     username,
     userCode: uniqId.replace(/\-/g, ""),
   };
-
   const insertKeys = Object.keys(insertFormat).join(", ");
   const insertValues = Object.values(insertFormat)
     .map((i) => `"${i}"`)
@@ -66,7 +52,6 @@ router.post("/insert", async function (req, res, next) {
       `INSERT INTO express_movie_app.users (${insertKeys}) values (${insertValues})`
     )
     .catch((err) => err);
-
   if (insertQuery.code === "ER_DUP_ENTRY") {
     res.json({ result: 2, error: insertQuery.errno });
   } else {
@@ -84,11 +69,6 @@ router.get("/getUser", async function (req, res, next) {
 
 // NOTE: Update
 router.post("/update", async function (req, res, next) {
-  const email = "monster2jy@gmail.com";
-  console.log(req.body);
-
-  console.log(_.omit(req.body, ["userCode"]));
-
   const updateFormat = {
     email: req.body.email,
     password: req.body.password,
@@ -98,16 +78,11 @@ router.post("/update", async function (req, res, next) {
   const updateString = _.reduce(
     Object.entries(updateFormat),
     (acc, [key, value]) => {
-      console.log(key, value, "key, value");
-      if (value.length !== 0) {
-        acc += `${key}="${value}", `;
-      }
+      if (value.length !== 0) acc += `${key}="${value}", `;
       return acc;
     },
     ""
   );
-  console.log(updateString, "updateString");
-
   const updateQuery = await database.query(
     `UPDATE express_movie_app.users SET ${removeLastComma(
       updateString
