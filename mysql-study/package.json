@@ -6,10 +6,14 @@
     "start": "nodemon --exec babel-node ./bin/www"
   },
   "dependencies": {
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.4",
+    "@babel/plugin-transform-destructuring": "^7.10.4",
+    "@babel/plugin-transform-spread": "^7.10.4",
     "axios": "^0.19.2",
     "babel-plugin-module-resolver": "^4.0.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
     "ejs": "~2.5.7",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
@@ -17,6 +21,7 @@
     "morgan": "~1.9.0",
     "mysql": "^2.18.1",
     "node-sass-middleware": "^0.11.0",
+    "run-sequence": "^2.2.1",
     "uuid": "^8.2.0"
   },
   "devDependencies": {
@@ -24,9 +29,13 @@
     "@babel/node": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "browser-sync": "^2.26.7",
-    "gulp": "^4.0.2",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^7.0.1",
     "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-file-cache": "0.0.1",
     "gulp-nodemon": "^2.5.0",
-    "gulp-sass": "^4.1.0"
+    "gulp-sass": "^4.1.0",
+    "node-sass": "^4.14.1"
   }
 }

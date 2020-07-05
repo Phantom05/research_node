@@ -1,9 +1,9 @@
-import {
-  getUsers,
-  findUser,
-  addUser,
-  deleteAllUser,
-} from "@/operations/user-operation";
+// import {
+//   getUsers,
+//   findUser,
+//   addUser,
+//   deleteAllUser,
+// } from "@/operations/user-operation";
 import { database } from "@/database/mysql";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
@@ -58,6 +58,8 @@ router.post("/insert", async function (req, res, next) {
     res.json({ result: 1 });
   }
 });
+
+// npm i @babel/plugin-proposal-object-rest-spread @babel/plugin-transform-destructuring @babel/plugin-transform-spread
 
 // NOTE: getUsers
 router.get("/getUser", async function (req, res, next) {
