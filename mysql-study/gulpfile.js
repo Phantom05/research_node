@@ -7,6 +7,7 @@ const runSequence = require("run-sequence");
 const autoprefixer = require("gulp-autoprefixer");
 // const cache = require("gulp-cache");
 const fileCache = require("gulp-file-cache");
+var sassGlob = require("gulp-sass-glob");
 const env = require("./config");
 const _cache = new fileCache();
 const reload = browserSync.reload;
@@ -65,7 +66,7 @@ function _styles() {
     gulp
       .src(paths.styles.src)
       // .pipe(sourcemaps.init())
-      // .pipe(sassGlob())
+      .pipe(sassGlob())
       .pipe(sass(setting.styles.scss_option).on("error", sass.logError))
       // .pipe(sourcemaps.write())
       .pipe(autoprefixer("last 2 versions"))
