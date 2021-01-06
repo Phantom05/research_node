@@ -6,7 +6,7 @@
     "start": "nodemon --exec babel-node ./bin/www"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-plugin-module-resolver": "^4.0.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
